@@ -80,4 +80,8 @@ sed -i 's/\(+luci-compat\)/\1 +luci-theme-argon/' luci-app-argon-config/Makefile
 sed -i "s/nas/services/g" `grep nas -rl luci-app-fileassistant`
 sed -i "s/NAS/Services/g" `grep NAS -rl luci-app-fileassistant`
 
+git add .
+git commit -am "update $(date +%Y-%m-%d" "%H:%M:%S)"
+git push --quiet "https://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@github.com/krystic/package-self.git" HEAD:package-self
+
 exit 0
