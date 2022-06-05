@@ -19,6 +19,7 @@ function mvdir() {
 git rm -r --cache * >/dev/null 2>&1 &
 rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
 
+git clone --depth 1 https://github.com/krystic/luci-app-cifs-mount
 git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice
 git clone --depth 1 https://github.com/sirpdboy/luci-app-netdata
@@ -81,6 +82,6 @@ sed -i "s/NAS/Services/g" `grep NAS -rl luci-app-fileassistant`
 
 git add .
 git commit -am "update $(date +%Y-%m-%d" "%H:%M:%S)"
-git push --quiet "https://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@github.com/krystic/package-self.git" HEAD:package-self
+git push --quiet "https://github.com/krystic/package-self.git@github.com/krystic/package-self.git"
 
 exit 0
