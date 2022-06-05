@@ -16,6 +16,10 @@ function mvdir() {
 	rm -rf $1
 }
 
+git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset
+git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice
+git clone --depth 1 https://github.com/sirpdboy/luci-app-netdata
+git clone --depth 1 https://github.com/sirpdboy/netspeedtest
 git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot
 git clone --depth 1 https://github.com/tty228/luci-app-serverchan
 git clone --depth 1 https://github.com/AlexZhuo/luci-app-bandwidthd.git
@@ -24,6 +28,7 @@ git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff
 git clone --depth 1 https://github.com/1wrt/luci-app-ikoolproxy.git
 git clone --depth 1 https://github.com/rufengsuixing/luci-app-adguardhome
 git clone --depth 1 https://github.com/honwen/luci-app-aliddns
+git clone --depth 1 https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
 
 # argon theme
 git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon
@@ -64,6 +69,10 @@ sed -i \
 	-e 's?\.\./\.\./luci.mk?$(TOPDIR)/feeds/luci/luci.mk?' \
 	*/Makefile
 
+sed -i 's/+dockerd/+dockerd +cgroupfs-mount/' luci-app-docker*/Makefile
+sed -i '$i /etc/init.d/dockerd restart &' luci-app-docker*/root/etc/uci-defaults/*
+sed -i 's/+libcap /+libcap +libcap-bin /' luci-app-openclash/Makefile
+sed -i 's/\(+luci-compat\)/\1 +luci-theme-argon/' luci-app-argon-config/Makefile
 # sed -i 's/luci-lib-ipkg/luci-base/g' luci-app-store/Makefile
 sed -i "s/nas/services/g" `grep nas -rl luci-app-fileassistant`
 sed -i "s/NAS/Services/g" `grep NAS -rl luci-app-fileassistant`
