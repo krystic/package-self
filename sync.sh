@@ -45,10 +45,21 @@ git clone --depth 1 https://github.com/UnblockNeteaseMusic/luci-app-unblocknetea
 # passwall
 git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall2 passwall2 && mv -n passwall2/luci-app-passwall2 ./;rm -rf passwall2
 git clone --depth 1 -b packages https://github.com/xiaorouji/openwrt-passwall && mv -n openwrt-passwall/chinadns-ng openwrt-passwall/dns2socks openwrt-passwall/dns2tcp openwrt-passwall/hysteria openwrt-passwall/ipt2socks openwrt-passwall/pdnsd-alt openwrt-passwall/trojan-go openwrt-passwall/trojan-plus openwrt-passwall/ssocks ./ ; rm -rf openwrt-passwall
-
+svn export --force https://github.com/kenzok8/jell/trunk/brook
+svn export --force https://github.com/openwrt/packages/trunk/net/shadowsocks-libev
+svn export --force https://github.com/fw876/helloworld/trunk/simple-obfs
+svn export --force https://github.com/fw876/helloworld/trunk/shadowsocks-rust
+svn export --force https://github.com/fw876/helloworld/trunk/shadowsocksr-libev
+svn export --force https://github.com/fw876/helloworld/trunk/trojan
+svn export --force https://github.com/fw876/helloworld/trunk/v2ray-core
+svn export --force https://github.com/fw876/helloworld/trunk/v2ray-geodata
+svn export --force https://github.com/fw876/helloworld/trunk/v2ray-plugin
+svn export --force https://github.com/fw876/helloworld/trunk/v2raya
+svn export --force https://github.com/fw876/helloworld/trunk/xray-core
+svn export --force https://github.com/fw876/helloworld/trunk/xray-plugin
 
 git clone --depth 1 https://github.com/messense/aliyundrive-webdav aliyundrive && mv -n aliyundrive/openwrt/* ./ ; rm -rf aliyundrive
-git clone --depth 1 https://github.com/messense/aliyundrive-fuse aliyundrive-fuse && mv -n aliyundrive-fuse/openwrt/* ./; rm -rf aliyundrive-fuse
+git clone --depth 1 https://github.com/messense/aliyundrive-fuse aliyundrive && mv -n aliyundrive-fuse/openwrt/* ./; rm -rf aliyundrive
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman
 
 svn export https://github.com/kiddin9/openwrt-packages/trunk/luci-app-fileassistant
@@ -82,6 +93,6 @@ sed -i "s/NAS/Services/g" `grep NAS -rl luci-app-fileassistant`
 
 git add .
 git commit -am "update $(date +%Y-%m-%d" "%H:%M:%S)"
-git push --quiet "https://github.com/krystic/package-self.git@github.com/krystic/package-self.git"
+git push --quiet "https://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@github.com/krystic/package-self.git"
 
 exit 0
