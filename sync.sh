@@ -16,6 +16,9 @@ function mvdir() {
 	rm -rf $1
 }
 
+git rm -r --cache * >/dev/null 2>&1 &
+rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
+
 git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice
 git clone --depth 1 https://github.com/sirpdboy/luci-app-netdata
