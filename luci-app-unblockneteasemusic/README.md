@@ -39,15 +39,13 @@
 1. 首次使用本插件时，将会在后台下载核心程序，故启动时间可能会稍微长一点
 2. 如需使用网页端，请额外安装 Tampermonkey 插件：[NeteaseMusic UI Unlocker](https://greasyfork.org/zh-CN/scripts/382285-neteasemusic-ui-unlocker)
 3. 推荐在客户端信任 [UnblockNeteaseMusic 证书](https://raw.githubusercontent.com/UnblockNeteaseMusic/server/enhanced/ca.crt)，以便 HTTPS 通讯（若您不放心，也可以[自行签发证书](https://github.com/nondanee/UnblockNeteaseMusic/issues/48#issuecomment-477870013)）
-4. Android 网易云音乐客户端版本不得大于 [8.0.20](https://www.wandoujia.com/apps/293217/history_v8000020)
 
 ### 效果图
 #### LuCI 界面
-  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/master/views/view1.jpg)
-  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/master/views/view2.jpg)
-  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/master/views/view3.jpg)
+  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/js/views/view1.jpg)
+  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/js/views/view2.jpg)
 #### UWP 网易云音乐客户端
-  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/master/views/view4.jpg)
+  ![Image text](https://raw.githubusercontent.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic/js/views/view3.jpg)
 
 ### 鸣谢
 [UnblockNeteaseMusic](https://github.com/UnblockNeteaseMusic/server)的开发者：[nondanee](https://github.com/nondanee)、[pan93412](https://github.com/pan93412)、[1715173329](https://github.com/1715173329)<br/>

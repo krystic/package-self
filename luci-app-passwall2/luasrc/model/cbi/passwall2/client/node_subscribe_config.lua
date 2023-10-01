@@ -1,26 +1,27 @@
-local api = require "luci.model.cbi.passwall2.api.api"
+local api = require "luci.passwall2.api"
 local appname = api.appname
 local sys = api.sys
 local has_ss = api.is_finded("ss-redir")
 local has_ss_rust = api.is_finded("sslocal")
-local has_v2ray = api.is_finded("v2ray")
-local has_xray = api.is_finded("xray")
+local has_singbox = api.finded_com("singbox")
+local has_xray = api.finded_com("xray")
 local ss_aead_type = {}
 if has_ss then
-    ss_aead_type[#ss_aead_type + 1] = "shadowsocks-libev"
+	ss_aead_type[#ss_aead_type + 1] = "shadowsocks-libev"
 end
 if has_ss_rust then
-    ss_aead_type[#ss_aead_type + 1] = "shadowsocks-rust"
+	ss_aead_type[#ss_aead_type + 1] = "shadowsocks-rust"
 end
-if has_v2ray then
-    ss_aead_type[#ss_aead_type + 1] = "v2ray"
+if has_singbox then
+	ss_aead_type[#ss_aead_type + 1] = "sing-box"
 end
 if has_xray then
-    ss_aead_type[#ss_aead_type + 1] = "xray"
+	ss_aead_type[#ss_aead_type + 1] = "xray"
 end
 
 m = Map(appname)
 m.redirect = api.url("node_subscribe")
+api.set_apply_on_parse(m)
 
 s = m:section(NamedSection, arg[1])
 s.addremove = false
@@ -57,12 +58,12 @@ o:depends("filter_keyword_mode", "3")
 o:depends("filter_keyword_mode", "4")
 
 if #ss_aead_type > 0 then
-    o = s:option(ListValue, "ss_aead_type", translate("SS AEAD Node Use Type"))
-    o.default = "global"
-    o:value("global", translate("Use global config"))
-    for key, value in pairs(ss_aead_type) do
-        o:value(value, translate(value:gsub("^%l",string.upper)))
-    end
+	o = s:option(ListValue, "ss_aead_type", translate("SS AEAD Node Use Type"))
+	o.default = "global"
+	o:value("global", translate("Use global config"))
+	for key, value in pairs(ss_aead_type) do
+		o:value(value, translate(value:gsub("^%l",string.upper)))
+	end
 end
 
 ---- Enable auto update subscribe

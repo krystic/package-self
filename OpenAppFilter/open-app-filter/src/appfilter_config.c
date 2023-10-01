@@ -195,7 +195,7 @@ void init_app_class_name_table(void)
     }
     while (fgets(line_buf, sizeof(line_buf), fp))
     {
-        sscanf(line_buf, "%d %s", &class_id, class_name);
+        sscanf(line_buf, "%d %*s %s", &class_id, class_name);
         strcpy(CLASS_NAME_TABLE[class_id - 1], class_name);
         g_cur_class_num++;
     }
@@ -229,29 +229,43 @@ af_ctl_time_t *load_appfilter_ctl_time_config(void)
 {
     char start_time_str[64] = {0};
     char end_time_str[64] = {0};
+    char start_time_str2[64] = {0};
+    char end_time_str2[64] = {0};
     char days_str[64] = {0};
+    int value = 0;
     int ret = 0;
     af_ctl_time_t *t = NULL;
     struct uci_context *ctx = uci_alloc_context();
     if (!ctx)
         return NULL;
 
-    ret |= uci_get_value(ctx, "appfilter.time.start_time", start_time_str, sizeof(start_time_str));
-    ret |= uci_get_value(ctx, "appfilter.time.end_time", end_time_str, sizeof(end_time_str));
-    ret |= uci_get_value(ctx, "appfilter.time.days", days_str, sizeof(days_str));
-    if (ret != 0){
-        printf("time config error\n");
-        return NULL;
-    }
+    memset(start_time_str, 0x0, sizeof(start_time_str));
+    memset(end_time_str, 0x0, sizeof(end_time_str));
+    memset(start_time_str2, 0x0, sizeof(start_time_str2));
+    memset(end_time_str2, 0x0, sizeof(end_time_str2));
 
-    if (!check_time_valid(start_time_str) || !check_time_valid(end_time_str)){
-        printf("format error\n");
-        return NULL;
-    }
+    uci_get_value(ctx, "appfilter.time.start_time", start_time_str, sizeof(start_time_str));
+    uci_get_value(ctx, "appfilter.time.end_time", end_time_str, sizeof(end_time_str));
+    uci_get_value(ctx, "appfilter.time.start_time2", start_time_str2, sizeof(start_time_str2));
+    uci_get_value(ctx, "appfilter.time.end_time2", end_time_str2, sizeof(end_time_str2));
+    uci_get_value(ctx, "appfilter.time.days", days_str, sizeof(days_str));
+
+
     t = malloc(sizeof(af_ctl_time_t));
 
-    sscanf(start_time_str, "%d:%d", &t->start.hour, &t->start.min);
-    sscanf(end_time_str, "%d:%d", &t->end.hour, &t->end.min);
+    value = uci_get_int_value(ctx, "appfilter.time.time_mode");
+    if (value < 0)
+        t->time_mode = 0;
+    else
+        t->time_mode = value;
+    if (check_time_valid(start_time_str) && check_time_valid(end_time_str)){
+        sscanf(start_time_str, "%d:%d", &t->start.hour, &t->start.min);
+        sscanf(end_time_str, "%d:%d", &t->end.hour, &t->end.min);
+    }
+    if (check_time_valid(start_time_str2) && check_time_valid(end_time_str2)){
+        sscanf(start_time_str2, "%d:%d", &t->start2.hour, &t->start2.min);
+        sscanf(end_time_str2, "%d:%d", &t->end2.hour, &t->end2.min);
+    }
 
     char *p = strtok(days_str, " ");
     if (!p)
@@ -284,6 +298,29 @@ int config_get_appfilter_enable(void)
 	uci_free_context(ctx);
     return enable;
 }
+
+int config_get_lan_ip(char *lan_ip, int len)
+{
+    int ret = 0;
+    struct uci_context *ctx = uci_alloc_context();
+    if (!ctx)
+        return -1;
+    ret = uci_get_value(ctx, "network.lan.ipaddr", lan_ip, len);
+    uci_free_context(ctx);
+    return ret;
+}
+
+int config_get_lan_mask(char *lan_mask, int len)
+{
+    int ret = 0;
+    struct uci_context *ctx = uci_alloc_context();
+    if (!ctx)
+        return -1;
+    ret = uci_get_value(ctx, "network.lan.netmask", lan_mask, len);
+    uci_free_context(ctx);
+    return ret;
+}
+
 
 int appfilter_config_alloc(void)
 {

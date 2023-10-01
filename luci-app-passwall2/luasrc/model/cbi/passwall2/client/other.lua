@@ -1,10 +1,14 @@
-local api = require "luci.model.cbi.passwall2.api.api"
+local api = require "luci.passwall2.api"
 local appname = api.appname
 local fs = api.fs
-local has_v2ray = api.is_finded("v2ray")
-local has_xray = api.is_finded("xray")
+local uci = api.uci
+local has_singbox = api.finded_com("singbox")
+local has_xray = api.finded_com("xray")
+local has_fw3 = api.is_finded("fw3")
+local has_fw4 = api.is_finded("fw4")
 
 m = Map(appname)
+api.set_apply_on_parse(m)
 
 -- [[ Delay Settings ]]--
 s = m:section(TypedSection, "global_delay", translate("Delay Settings"))
@@ -12,8 +16,7 @@ s.anonymous = true
 s.addremove = false
 
 ---- Delay Start
-o = s:option(Value, "start_delay", translate("Delay Start"),
-             translate("Units:seconds"))
+o = s:option(Value, "start_delay", translate("Delay Start"), translate("Units:seconds"))
 o.default = "1"
 o.rmempty = true
 
@@ -51,8 +54,7 @@ for e = 0, 23 do o:value(e, e .. translate("oclock")) end
 --]]
 
 -- [[ Forwarding Settings ]]--
-s = m:section(TypedSection, "global_forwarding",
-              translate("Forwarding Settings"))
+s = m:section(TypedSection, "global_forwarding", translate("Forwarding Settings"))
 s.anonymous = true
 s.addremove = false
 
@@ -64,9 +66,9 @@ o:value("1:65535", translate("All"))
 
 ---- UDP No Redir Ports
 o = s:option(Value, "udp_no_redir_ports", translate("UDP No Redir Ports"),
-             "<font color='red'>" .. translate(
-                 "Fill in the ports you don't want to be forwarded by the agent, with the highest priority.") ..
-                 "</font>")
+	"<font color='red'>" ..
+	translate("Fill in the ports you don't want to be forwarded by the agent, with the highest priority.") ..
+	"</font>")
 o.default = "disable"
 o:value("disable", translate("No patterns are used"))
 o:value("1:65535", translate("All"))
@@ -83,30 +85,40 @@ o = s:option(Value, "udp_redir_ports", translate("UDP Redir Ports"))
 o.default = "1:65535"
 o:value("1:65535", translate("All"))
 
-if os.execute("lsmod | grep -i REDIRECT >/dev/null") == 0 and os.execute("lsmod | grep -i TPROXY >/dev/null") == 0 then
-    o = s:option(ListValue, "tcp_proxy_way", translate("TCP Proxy Way"))
-    o.default = "redirect"
-    o:value("redirect", "REDIRECT")
-    o:value("tproxy", "TPROXY")
-    o:depends("ipv6_tproxy", false)
+---- Use nftables
+o = s:option(ListValue, "use_nft", translate("Firewall tools"))
+o.default = "0"
+if has_fw3 then
+	o:value("0", "IPtables")
+end
+if has_fw4 then
+	o:value("1", "NFtables")
+end
 
-    o = s:option(ListValue, "_tcp_proxy_way", translate("TCP Proxy Way"))
-    o.default = "tproxy"
-    o:value("tproxy", "TPROXY")
-    o:depends("ipv6_tproxy", true)
-    o.write = function(self, section, value)
-        return self.map:set(section, "tcp_proxy_way", value)
-    end
+if (os.execute("lsmod | grep -i REDIRECT >/dev/null") == 0 and os.execute("lsmod | grep -i TPROXY >/dev/null") == 0) or (os.execute("lsmod | grep -i nft_redir >/dev/null") == 0 and os.execute("lsmod | grep -i nft_tproxy >/dev/null") == 0) then
+	o = s:option(ListValue, "tcp_proxy_way", translate("TCP Proxy Way"))
+	o.default = "redirect"
+	o:value("redirect", "REDIRECT")
+	o:value("tproxy", "TPROXY")
+	o:depends("ipv6_tproxy", false)
 
-    if os.execute("lsmod | grep -i ip6table_mangle >/dev/null") == 0 then
-        ---- IPv6 TProxy
-        o = s:option(Flag, "ipv6_tproxy", translate("IPv6 TProxy"),
-                    "<font color='red'>" .. translate(
-                        "Experimental feature. Make sure that your node supports IPv6.") ..
-                        "</font>")
-        o.default = 0
-        o.rmempty = false
-    end
+	o = s:option(ListValue, "_tcp_proxy_way", translate("TCP Proxy Way"))
+	o.default = "tproxy"
+	o:value("tproxy", "TPROXY")
+	o:depends("ipv6_tproxy", true)
+	o.write = function(self, section, value)
+		return self.map:set(section, "tcp_proxy_way", value)
+	end
+
+	if os.execute("lsmod | grep -i ip6table_mangle >/dev/null") == 0 or os.execute("lsmod | grep -i nft_tproxy >/dev/null") == 0 then
+		---- IPv6 TProxy
+		o = s:option(Flag, "ipv6_tproxy", translate("IPv6 TProxy"),
+			"<font color='red'>" ..
+			translate("Experimental feature. Make sure that your node supports IPv6.") ..
+			"</font>")
+		o.default = 0
+		o.rmempty = false
+	end
 end
 
 o = s:option(Flag, "accept_icmp", translate("Hijacking ICMP (PING)"))
@@ -116,33 +128,63 @@ o = s:option(Flag, "accept_icmpv6", translate("Hijacking ICMPv6 (IPv6 PING)"))
 o:depends("ipv6_tproxy", true)
 o.default = 0
 
-if has_v2ray or has_xray then
-    o = s:option(Flag, "sniffing", translate("Sniffing (V2Ray/Xray)"), translate("When using the V2ray/Xray shunt, must be enabled, otherwise the shunt will invalid."))
-    o.default = 1
-    o.rmempty = false
+if has_xray then
+	s_xray = m:section(TypedSection, "global_xray", "Xray " .. translate("Settings"))
+	s_xray.anonymous = true
+	s_xray.addremove = false
 
-    if has_xray then
-        route_only = s:option(Flag, "route_only", translate("Sniffing Route Only (Xray)"), translate("When enabled, the server not will resolve the domain name again."))
-        route_only.default = 0
-        route_only:depends("sniffing", true)
+	o = s_xray:option(Flag, "sniffing", translate("Sniffing"), translate("When using the shunt, must be enabled, otherwise the shunt will invalid."))
+	o.default = 1
+	o.rmempty = false
 
-        local domains_excluded = string.format("/usr/share/%s/domains_excluded", appname)
-        o = s:option(TextValue, "no_sniffing_hosts", translate("No Sniffing Lists"), translate("Hosts added into No Sniffing Lists will not resolve again on server (Xray only)."))
-        o.rows = 15
-        o.wrap = "off"
-        o.cfgvalue = function(self, section) return fs.readfile(domains_excluded) or "" end
-        o.write = function(self, section, value) fs.writefile(domains_excluded, value:gsub("\r\n", "\n")) end
-        o.remove = function(self, section, value)
-            if route_only:formvalue(section) == "0" then
-                fs.writefile(domains_excluded, "")
-            end
-        end
-        o:depends({sniffing = true, route_only = false})
+	o = s_xray:option(Flag, "route_only", translate("Sniffing Route Only"))
+	o.default = 0
+	o:depends("sniffing", true)
 
-        o = s:option(Value, "buffer_size", translate("Buffer Size (Xray)"), translate("Buffer size for every connection (kB)"))
-        o.rmempty = true
-        o.datatype = "uinteger"
-    end
+	local domains_excluded = string.format("/usr/share/%s/domains_excluded", appname)
+	o = s_xray:option(TextValue, "no_sniffing_hosts", translate("No Sniffing Lists"), translate("Hosts added into No Sniffing Lists will not resolve again on server."))
+	o.rows = 15
+	o.wrap = "off"
+	o.cfgvalue = function(self, section) return fs.readfile(domains_excluded) or "" end
+	o.write = function(self, section, value) fs.writefile(domains_excluded, value:gsub("\r\n", "\n")) end
+	o.remove = function(self, section)
+		local route_only_value = s_xray.fields["route_only"] and s_xray.fields["route_only"]:formvalue(section) or nil
+		if not route_only_value or route_only_value == "0" then
+			fs.writefile(domains_excluded, "")
+		end
+	end
+	o:depends({sniffing = true, route_only = false})
+
+	o = s_xray:option(Value, "buffer_size", translate("Buffer Size"), translate("Buffer size for every connection (kB)"))
+	o.datatype = "uinteger"
+end
+
+if has_singbox then
+	s = m:section(TypedSection, "global_singbox", "Sing-Box " .. translate("Settings"))
+	s.anonymous = true
+	s.addremove = false
+
+	o = s:option(Flag, "sniff_override_destination", translate("Override the connection destination address"), translate("Override the connection destination address with the sniffed domain."))
+	o.default = 0
+	o.rmempty = false
+
+	o = s:option(Value, "geoip_path", translate("Custom geoip Path"))
+	o.default = "/usr/share/singbox/geoip.db"
+	o.rmempty = false
+
+	o = s:option(Value, "geoip_url", translate("Custom geoip URL"))
+	o.default = "https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db"
+	o:value("https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db")
+	o.rmempty = false
+
+	o = s:option(Value, "geosite_path", translate("Custom geosite Path"))
+	o.default = "/usr/share/singbox/geosite.db"
+	o.rmempty = false
+
+	o = s:option(Value, "geosite_url", translate("Custom geosite URL"))
+	o.default = "https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db"
+	o:value("https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db")
+	o.rmempty = false
 end
 
 return m

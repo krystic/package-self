@@ -19,7 +19,7 @@ function mvdir() {
 git rm -r --cache * >/dev/null 2>&1 &
 rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
 
-git clone --depth 1 -b 18.06 https://github.com/riverscn/luci-app-omcproxy
+#git clone --depth 1 -b 18.06 https://github.com/riverscn/luci-app-omcproxy
 git clone --depth 1 https://github.com/krystic/luci-app-cifs-mount
 git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice
@@ -32,14 +32,14 @@ git clone --depth 1 https://github.com/destan19/OpenAppFilter.git
 git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff
 git clone --depth 1 https://github.com/1wrt/luci-app-ikoolproxy.git
 git clone --depth 1 https://github.com/krystic/luci-app-adguardhome
-git clone --depth 1 https://github.com/honwen/luci-app-aliddns
-git clone --depth 1 https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
+#git clone --depth 1 https://github.com/honwen/luci-app-aliddns
+#git clone --depth 1 https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
 
 # argon theme
 git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
 git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config
 git clone --depth 1 https://github.com/sirpdboy/luci-app-advanced
-git clone --depth 1 https://github.com/frainzy1477/luci-app-clash
+#git clone --depth 1 https://github.com/frainzy1477/luci-app-clash
 git clone --depth 1 https://github.com/Huangjoe123/luci-app-eqos
 git clone --depth 1 https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic
 
@@ -49,7 +49,7 @@ git clone --depth 1 https://github.com/jerrykuku/luci-app-vssr
 
 # passwall
 git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall2 passwall2 && mv -n passwall2/luci-app-passwall2 ./;rm -rf passwall2
-git clone --depth 1 -b packages https://github.com/xiaorouji/openwrt-passwall && mv -n openwrt-passwall/chinadns-ng openwrt-passwall/dns2socks openwrt-passwall/dns2tcp openwrt-passwall/hysteria openwrt-passwall/ipt2socks openwrt-passwall/pdnsd-alt openwrt-passwall/trojan-go openwrt-passwall/trojan-plus openwrt-passwall/ssocks ./ ; rm -rf openwrt-passwall
+git clone --depth 1	https://github.com/xiaorouji/openwrt-passwall-packages openwrt-passwall && mv -n openwrt-passwall/chinadns-ng openwrt-passwall/dns2socks openwrt-passwall/dns2tcp openwrt-passwall/hysteria openwrt-passwall/ipt2socks openwrt-passwall/pdnsd-alt openwrt-passwall/trojan-go openwrt-passwall/trojan-plus openwrt-passwall/ssocks ./ ; rm -rf openwrt-passwall
 svn export --force https://github.com/kenzok8/jell/trunk/brook
 svn export --force https://github.com/openwrt/packages/trunk/net/shadowsocks-libev
 svn export --force https://github.com/fw876/helloworld/trunk/simple-obfs

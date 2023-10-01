@@ -90,6 +90,7 @@ find_bin() {
     ssr-server) ret="ssr-server" ;;
     v2ray | vless) ret="xray" ;;
     trojan) ret="trojan" ;;
+    hysteria) ret="hysteria" ;;
     esac
     echo $(find /usr -perm /+x -type f -name $ret)
 }
@@ -191,6 +192,8 @@ start_rules() {
         server=$(ping ${server} -s 1 -c 1 | grep PING | cut -d'(' -f 2 | cut -d')' -f1)
         if echo $server | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" >/dev/null; then
             echo $server >/etc/ssr_ip
+        elif [ "$server" != "${server#*:[0-9a-fA-F]}" ]; then
+            echo $server >/etc/ssr_ip
         else
             server=$(cat /etc/ssr_ip)
         fi
@@ -220,6 +223,8 @@ start_rules() {
             udp_server=$(ping ${udp_server} -s 1 -c 1 | grep PING | cut -d'(' -f 2 | cut -d')' -f1)
             if echo $udp_server | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" >/dev/null; then
                 echo $udp_server >/etc/ssr_ip
+            elif [ "$udp_server" != "${udp_server#*:[0-9a-fA-F]}" ]; then
+                echo $udp_server >/etc/ssr_ip
             else
                 udp_server=$(cat /etc/ssr_ip)
             fi
@@ -243,11 +248,11 @@ start_rules() {
         direct) gfwmode="-d" ;;
     esac
 
-    local dports=$(uci_get_by_type global dports 1)
-    if [ $dports = "1" ]; then
+    local dports=$(uci_get_by_type global dports)
+    if [[ -z $dports ]]; then
         proxyport=" "
     else
-        proxyport="-m multiport --dports 22,53,587,465,995,993,143,80,443,9418"
+        proxyport="-m multiport --dports $dports"
     fi
 
     $VSSR_RULES_BIN \
@@ -365,6 +370,9 @@ start_shunt() {
             trojan)
                 $bin --config $config_file >/dev/null 2>&1 &
                 ;;
+            hysteria)
+                $bin -c $config_file >/dev/null 2>&1 &
+                ;;
             esac
             echo "$(date "+%Y-%m-%d %H:%M:%S") ${shunt_type}: $server_type 分流服务已启动!" >>/tmp/vssr.log
         fi
@@ -424,6 +432,10 @@ start_redir() {
             $sscmd -config $last_config_file >/dev/null 2>&1 &
             echo "$(date "+%Y-%m-%d %H:%M:%S") $($sscmd -version | head -1) 已启动!" >>/tmp/vssr.log
             ;;
+        hysteria)
+            $sscmd -c $last_config_file >/dev/null 2>&1 &
+            echo "$(date "+%Y-%m-%d %H:%M:%S") $($sscmd -v | head -1) 已启动!" >>/tmp/vssr.log
+            ;;
         trojan)
             for i in $(seq 1 $threads); do
                 $sscmd -c $last_config_file >/dev/null 2>&1 &
@@ -465,6 +477,10 @@ start_redir() {
         v2ray | vless)
             $ucmd -config $last_config_file >/dev/null 2>&1 &
             echo "$(date "+%Y-%m-%d %H:%M:%S") UDP TPROXY Relay: $($sscmd -version | head -1) 已启动!" >>/tmp/vssr.log
+            ;;
+        hysteria)
+            $ucmd -c $last_config_file >/dev/null 2>&1 &
+            echo "$(date "+%Y-%m-%d %H:%M:%S") UDP TPROXY Relay: $($sscmd -v | head -1) 已启动!" >>/tmp/vssr.log
             ;;
         trojan)
             $ucmd --config $last_config_file >/dev/null 2>&1 &
@@ -609,26 +625,26 @@ start() {
     fi
     if rules; then
         if start_redir; then
-            if [ -f "/tmp/dnsmasq.ssr" ]; then
-                rm -rf /tmp/dnsmasq.ssr
+            if [ -f "/tmp/dnsmasq.d/dnsmasq.ssr.d" ]; then
+                rm -rf /tmp/dnsmasq.d/dnsmasq.ssr.d
             fi
             if [ -f "/tmp/dnsmasq.oversea" ]; then
                 rm -rf /tmp/dnsmasq.oversea
             fi
             mkdir -p /tmp/dnsmasq.d
             if [ "$run_mode" = "direct" ]; then
-                mkdir -p /tmp/dnsmasq.ssr
-                cp -rf /etc/vssr/ad.conf /tmp/dnsmasq.ssr/
+                mkdir -p /tmp/dnsmasq.d/dnsmasq.ssr.d
+                cp -rf /etc/vssr/ad.conf /tmp/dnsmasq.d/dnsmasq.ssr.d/
                 cat >/tmp/dnsmasq.d/dnsmasq-ssr.conf <<EOF
-conf-dir=/tmp/dnsmasq.ssr
+conf-dir=/tmp/dnsmasq.d/dnsmasq.ssr.d
 EOF
             elif ! [ "$run_mode" = "oversea" ]; then
-                mkdir -p /tmp/dnsmasq.ssr
-                cp -rf /etc/vssr/gfw_list.conf /tmp/dnsmasq.ssr/
-                cp -rf /etc/vssr/gfw_base.conf /tmp/dnsmasq.ssr/
-                cp -rf /etc/vssr/ad.conf /tmp/dnsmasq.ssr/
+                mkdir -p /tmp/dnsmasq.d/dnsmasq.ssr.d
+                cp -rf /etc/vssr/gfw_list.conf /tmp/dnsmasq.d/dnsmasq.ssr.d/
+                cp -rf /etc/vssr/gfw_base.conf /tmp/dnsmasq.d/dnsmasq.ssr.d/
+                cp -rf /etc/vssr/ad.conf /tmp/dnsmasq.d/dnsmasq.ssr.d/
                 cat >/tmp/dnsmasq.d/dnsmasq-ssr.conf <<EOF
-conf-dir=/tmp/dnsmasq.ssr
+conf-dir=/tmp/dnsmasq.d/dnsmasq.ssr.d
 EOF
             else
                 mkdir -p /tmp/dnsmasq.oversea
@@ -638,7 +654,7 @@ conf-dir=/tmp/dnsmasq.oversea
 EOF
             fi
             if [ $(uci_get_by_type global adblock) = 0 ]; then
-                rm -f /tmp/dnsmasq.ssr/ad.conf
+                rm -f /tmp/dnsmasq.d/dnsmasq.ssr.d/ad.conf
             fi
             /usr/share/vssr/gfw2ipset.sh
         else
@@ -688,10 +704,10 @@ stop() {
     if [ $(uci_get_by_type global monitor_enable) = 1 ]; then
         kill -9 $(busybox ps -w | grep vssr-monitor | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     fi
-    killall -q -9 ss-redir ss-local obfs-local ssr-redir ssr-local ssr-server xray-plugin xray trojan microsocks ipt2socks dns2socks pdnsd
+    killall -q -9 ss-redir ss-local obfs-local ssr-redir ssr-local ssr-server xray-plugin xray hysteria trojan microsocks ipt2socks dns2socks pdnsd
 
     if [ -f "/tmp/dnsmasq.d/dnsmasq-ssr.conf" ]; then
-        rm -rf /tmp/dnsmasq.d/dnsmasq-ssr.conf /tmp/dnsmasq.ssr /tmp/dnsmasq.oversea
+        rm -rf /tmp/dnsmasq.d/dnsmasq-ssr.conf /tmp/dnsmasq.d/dnsmasq.ssr.d /tmp/dnsmasq.oversea
         /etc/init.d/dnsmasq restart >/dev/null 2>&1
     fi
     del_cron

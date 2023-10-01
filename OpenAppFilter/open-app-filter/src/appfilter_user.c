@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include <linux/netlink.h>
 #include <linux/socket.h>
 #include <sys/socket.h>
+#include "appfilter.h"
 #include "appfilter_user.h"
 
 dev_node_t *dev_hash_table[MAX_DEV_NODE_HASH_SIZE];
@@ -190,18 +191,21 @@ void clean_dev_online_status(void)
         dev_node_t *node = dev_hash_table[i];
         while (node)
         {
-            node->online = 0;
-            node->offline_time = get_timestamp();
+            if (node->online)
+            {
+                node->offline_time = get_timestamp();
+                node->online = 0;
+            }
             node = node->next;
         }
     }
 }
 
 /*
-Id   Mac                  Ip                  
-1    10:bf:48:37:0c:94    192.168.66.244 
+Id   Mac                  Ip
+1    10:bf:48:37:0c:94    192.168.66.244
 */
-void check_dev_expire(void)
+void update_dev_from_oaf(void)
 {
     char line_buf[256] = {0};
     char mac_buf[32] = {0};
@@ -234,6 +238,141 @@ void check_dev_expire(void)
     }
     fclose(fp);
 }
+
+void update_dev_from_arp(void)
+{
+    char line_buf[256] = {0};
+    char mac_buf[32] = {0};
+    char ip_buf[32] = {0};
+    char lan_ip[32] = {0};
+    char lan_mask[32] = {0};
+
+    exec_with_result_line(CMD_GET_LAN_IP, lan_ip, sizeof(lan_ip));
+    exec_with_result_line(CMD_GET_LAN_MASK, lan_mask, sizeof(lan_mask));
+    if (strlen(lan_ip) < MIN_INET_ADDR_LEN || strlen(lan_mask) < MIN_INET_ADDR_LEN)
+    {
+        return;
+    }
+
+    FILE *fp = fopen("/proc/net/arp", "r");
+    if (!fp)
+    {
+        printf("open dev file....failed\n");
+        return;
+    }
+    fgets(line_buf, sizeof(line_buf), fp); // title
+    while (fgets(line_buf, sizeof(line_buf), fp))
+    {
+        sscanf(line_buf, "%s %*s %*s %s", ip_buf, mac_buf);
+
+        if (strlen(mac_buf) < 17 || strlen(ip_buf) < MIN_INET_ADDR_LEN)
+        {
+            printf("invalid mac:%s or ip:%s\n", mac_buf, ip_buf);
+            continue;
+        }
+        if (0 == strcmp(mac_buf, "00:00:00:00:00:00"))
+            continue;
+        if (!check_same_network(lan_ip, lan_mask, ip_buf) || 0 == strcmp(lan_ip, ip_buf))
+        {
+            continue;
+        }
+        dev_node_t *node = find_dev_node(mac_buf);
+        if (!node)
+        {
+            node = add_dev_node(mac_buf);
+            if (!node)
+                continue;
+            strncpy(node->ip, ip_buf, sizeof(node->ip));
+        }
+    }
+    fclose(fp);
+}
+void update_dev_online_status(void)
+{
+    update_dev_from_oaf();
+    update_dev_from_arp();
+}
+
+#define DEV_OFFLINE_TIME (SECONDS_PER_DAY * 3)
+
+int check_dev_expire(void)
+{
+    int i, j;
+    int count = 0;
+    int cur_time = get_timestamp();
+    int offline_time = 0;
+    int expire_count = 0;
+    int visit_count = 0;
+    for (i = 0; i < MAX_DEV_NODE_HASH_SIZE; i++)
+    {
+        dev_node_t *node = dev_hash_table[i];
+        while (node)
+        {
+            if (node->online)
+                goto NEXT;
+            visit_count = 0;
+            offline_time = cur_time - node->offline_time;
+            if (offline_time > DEV_OFFLINE_TIME)
+            {
+                node->expire = 1;
+                for (j = 0; j < MAX_VISIT_HASH_SIZE; j++)
+                {
+                    visit_info_t *p_info = node->visit_htable[j];
+                    while (p_info)
+                    {
+                        p_info->expire = 1;
+                        visit_count++;
+                        p_info = p_info->next;
+                    }
+                }
+                expire_count++;
+                printf("dev:%s expired, offline time = %ds, count=%d, visit_count=%d\n",
+                       node->mac, offline_time, expire_count, visit_count);
+            }
+        NEXT:
+            node = node->next;
+        }
+    }
+    return expire_count;
+}
+
+void flush_dev_expire_node(void)
+{
+    int i, j;
+    int count = 0;
+    dev_node_t *node = NULL;
+    dev_node_t *prev = NULL;
+    for (i = 0; i < MAX_DEV_NODE_HASH_SIZE; i++)
+    {
+        dev_node_t *node = dev_hash_table[i];
+        prev = NULL;
+        while (node)
+        {
+            if (node->expire)
+            {
+                if (NULL == prev)
+                {
+                    dev_hash_table[i] = node->next;
+                    free(node);
+                    node = dev_hash_table[i];
+                    prev = NULL;
+                }
+                else
+                {
+                    prev->next = node->next;
+                    free(node);
+                    node = prev->next;
+                }
+            }
+            else
+            {
+                prev = node;
+                node = node->next;
+            }
+        }
+    }
+}
+
 void dump_dev_list(void)
 {
     int i, j;
@@ -242,7 +381,7 @@ void dump_dev_list(void)
     char ip_buf[MAX_IP_LEN] = {0};
     clean_dev_online_status();
     update_dev_hostname();
-    check_dev_expire();
+    update_dev_online_status();
     FILE *fp = fopen(OAF_DEV_LIST_FILE, "w");
     if (!fp)
     {
@@ -305,10 +444,10 @@ EXIT:
     fclose(fp);
 }
 // 记录最大保存时间 todo: support config
-#define MAX_RECORD_TIME (7 * 24 * 60 * 60) // 7day
+#define MAX_RECORD_TIME (3 * 24 * 60 * 60) // 7day
 // 超过1天后清除短时间的记录
 #define RECORD_REMAIN_TIME (24 * 60 * 60) // 1day
-#define INVALID_RECORD_TIME (5 * 60) // 5min
+#define INVALID_RECORD_TIME (5 * 60)      // 5min
 
 void check_dev_visit_info_expire(void)
 {
@@ -326,11 +465,13 @@ void check_dev_visit_info_expire(void)
                 while (p_info)
                 {
                     int total_time = p_info->latest_time - p_info->first_time;
-                    int interval_time = cur_time - p_info->first_time; 
-                    if (interval_time > MAX_RECORD_TIME || interval_time < 0){
+                    int interval_time = cur_time - p_info->first_time;
+                    if (interval_time > MAX_RECORD_TIME || interval_time < 0)
+                    {
                         p_info->expire = 1;
                     }
-                    else if (interval_time > RECORD_REMAIN_TIME){
+                    else if (interval_time > RECORD_REMAIN_TIME)
+                    {
                         if (total_time < INVALID_RECORD_TIME)
                             p_info->expire = 1;
                     }
@@ -358,36 +499,33 @@ void flush_expire_visit_info(void)
                 prev = NULL;
                 while (p_info)
                 {
-                    if (p_info->expire){
-                        printf("del node %-20s %-20s %d\n",
-                                                  node->mac, node->ip, p_info->appid
-                                                  );
-                        if (NULL == prev){
+                    if (p_info->expire)
+                    {
+                        if (NULL == prev)
+                        {
                             node->visit_htable[j] = p_info->next;
                             free(p_info);
                             p_info = node->visit_htable[j];
                             prev = NULL;
                         }
-                        else{
+                        else
+                        {
                             prev->next = p_info->next;
                             free(p_info);
                             p_info = prev->next;
                         }
                     }
-                    else{
+                    else
+                    {
                         prev = p_info;
                         p_info = p_info->next;
                     }
-  
                 }
             }
             node = node->next;
         }
     }
 }
-
-
-
 
 void dump_dev_visit_list(void)
 {
