@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash --login
 
 function git_sparse_clone() {
 	branch="$1" rurl="$2" localdir="$3" && shift 3
