@@ -64,7 +64,7 @@ svn export --force https://github.com/fw876/helloworld/trunk/xray-core
 svn export --force https://github.com/fw876/helloworld/trunk/xray-plugin
 
 git clone --depth 1 https://github.com/messense/aliyundrive-webdav aliyundrive && mv -n aliyundrive/openwrt/* ./ ; rm -rf aliyundrive
-git clone --depth 1 https://github.com/messense/aliyundrive-fuse aliyundrive && mv -n aliyundrive-fuse/openwrt/* ./; rm -rf aliyundrive
+git clone --depth 1 https://github.com/messense/aliyundrive-fuse aliyundrive && mv -n aliyundrive/openwrt/* ./; rm -rf aliyundrive
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman
 
 svn export https://github.com/kiddin9/openwrt-packages/trunk/luci-app-fileassistant
