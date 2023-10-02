@@ -32,7 +32,10 @@ git clone --depth 1 https://github.com/AlexZhuo/luci-app-bandwidthd.git
 git clone --depth 1 https://github.com/destan19/OpenAppFilter.git
 git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff
 git clone --depth 1 https://github.com/1wrt/luci-app-ikoolproxy.git
-git clone --depth 1 https://github.com/krystic/luci-app-adguardhome
+
+#git clone --depth 1 https://github.com/krystic/luci-app-adguardhome
+svn export https://github.com/sirpdboy/sirpdboy-package/trunk/luci-app-adguardhome
+
 #git clone --depth 1 https://github.com/honwen/luci-app-aliddns
 #git clone --depth 1 https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
 
