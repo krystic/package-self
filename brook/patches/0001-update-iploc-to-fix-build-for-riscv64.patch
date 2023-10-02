@@ -1,7 +1,7 @@
 From 934fd3f3d7c5602020850298443a08af6bbc3771 Mon Sep 17 00:00:00 2001
 From: MoetaYuko <loli@yuko.moe>
 Date: Tue, 6 Jun 2023 17:49:59 +0800
-Subject: [PATCH] update iploc to fix build for riscv64
+Subject: [PATCH 01/10] update iploc to fix build for riscv64
 
 ---
  go.mod | 2 +-
@@ -37,5 +37,5 @@ index ee5c8bf..cecdb21 100644
  github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
  github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 -- 
-2.41.0
+2.39.1
 

@@ -1,0 +1,112 @@
+From 6b7e85a4a57f76d6f19dcffe057f239aa62b908a Mon Sep 17 00:00:00 2001
+From: txthinking <cloud@txthinking.com>
+Date: Tue, 11 Jul 2023 13:00:15 +0800
+Subject: [PATCH 05/10] =?UTF-8?q?Brook=20Deploy=20=E2=9D=A4=EF=B8=8F?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ README.md       |  9 +++++++++
+ docs/build.sh   |  6 ++++++
+ docs/index.html | 19 +++++++++++++++++++
+ 3 files changed, 34 insertions(+)
+
+diff --git a/README.md b/README.md
+index 6cc9c25..c1d94fd 100644
+--- a/README.md
++++ b/README.md
+@@ -121,6 +121,9 @@ Table of Contents
+ * [Blog](#blog)
+ * [YouTube](#youtube)
+ * [Telegram](#telegram)
++* [brook-mamanger](#brook-mamanger)
++* [nico](#nico)
++* [Brook Deploy](#brook-deploy)
+ * [Pastebin](#pastebin)
+ * [独立脚本例子 | Standalone Script Example](#独立脚本例子--standalone-script-example)
+ * [脚本生成器 | Brook Script Builder](#脚本生成器--brook-script-builder)
+@@ -1512,6 +1515,12 @@ https://www.txthinking.com/talks/
+ https://www.youtube.com/txthinking
+ # Telegram
+ https://t.me/s/txthinking_news
++# brook-mamanger
++https://github.com/txthinking/brook-manager
++# nico
++https://github.com/txthinking/nico
++# Brook Deploy
++https://www.txthinking.com/deploy.html
+ # Pastebin
+ https://paste.brook.app
+ # 独立脚本例子 | Standalone Script Example
+diff --git a/docs/build.sh b/docs/build.sh
+index f681315..c798d9a 100755
+--- a/docs/build.sh
++++ b/docs/build.sh
+@@ -33,6 +33,12 @@ echo '# YouTube' >> ../readme.md
+ echo 'https://www.youtube.com/txthinking' >> ../readme.md
+ echo '# Telegram' >> ../readme.md
+ echo 'https://t.me/s/txthinking_news' >> ../readme.md
++echo '# brook-mamanger' >> ../readme.md
++echo 'https://github.com/txthinking/brook-manager' >> ../readme.md
++echo '# nico' >> ../readme.md
++echo 'https://github.com/txthinking/nico' >> ../readme.md
++echo '# Brook Deploy' >> ../readme.md
++echo 'https://www.txthinking.com/deploy.html' >> ../readme.md
+ echo '# Pastebin' >> ../readme.md
+ echo 'https://paste.brook.app' >> ../readme.md
+ echo '# 独立脚本例子 | Standalone Script Example' >> ../readme.md
+diff --git a/docs/index.html b/docs/index.html
+index c887e54..c8a3869 100644
+--- a/docs/index.html
++++ b/docs/index.html
+@@ -1251,6 +1251,9 @@ div.content {
+ <li><a href="#blog" rel="nofollow">Blog</a></li>
+ <li><a href="#youtube" rel="nofollow">YouTube</a></li>
+ <li><a href="#telegram" rel="nofollow">Telegram</a></li>
++<li><a href="#brook-mamanger" rel="nofollow">brook-mamanger</a></li>
++<li><a href="#nico" rel="nofollow">nico</a></li>
++<li><a href="#brook-deploy" rel="nofollow">Brook Deploy</a></li>
+ <li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
+ <li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90--standalone-script-example" rel="nofollow">独立脚本例子 | Standalone Script Example</a></li>
+ <li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8--brook-script-builder" rel="nofollow">脚本生成器 | Brook Script Builder</a></li>
+@@ -1394,6 +1397,9 @@ div.content {
+ <li><a href="#blog" rel="nofollow">Blog</a></li>
+ <li><a href="#youtube" rel="nofollow">YouTube</a></li>
+ <li><a href="#telegram" rel="nofollow">Telegram</a></li>
++<li><a href="#brook-mamanger" rel="nofollow">brook-mamanger</a></li>
++<li><a href="#nico" rel="nofollow">nico</a></li>
++<li><a href="#brook-deploy" rel="nofollow">Brook Deploy</a></li>
+ <li><a href="#pastebin" rel="nofollow">Pastebin</a></li>
+ <li><a href="#%E7%8B%AC%E7%AB%8B%E8%84%9A%E6%9C%AC%E4%BE%8B%E5%AD%90--standalone-script-example" rel="nofollow">独立脚本例子 | Standalone Script Example</a></li>
+ <li><a href="#%E8%84%9A%E6%9C%AC%E7%94%9F%E6%88%90%E5%99%A8--brook-script-builder" rel="nofollow">脚本生成器 | Brook Script Builder</a></li>
+@@ -1708,6 +1714,7 @@ wsserver</h2>
+ <p><strong>--updateListInterval</strong>=&#34;&#34;: Update list interval, second. default 0, only read one time on start (default: 0)</p>
+ 
+ <p><strong>--withoutBrookProtocol</strong>: The data will not be encrypted with brook protocol</p>
++
+ <h2><a name="wsclient" class="anchor" href="#wsclient" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+ wsclient</h2>
+ 
+@@ -3888,6 +3895,18 @@ YouTube</h1>
+ Telegram</h1>
+ 
+ <p><a href="https://t.me/s/txthinking_news" rel="nofollow">https://t.me/s/txthinking_news</a></p>
++<h1><a name="brook-mamanger" class="anchor" href="#brook-mamanger" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
++brook-mamanger</h1>
++
++<p><a href="https://github.com/txthinking/brook-manager" rel="nofollow">https://github.com/txthinking/brook-manager</a></p>
++<h1><a name="nico" class="anchor" href="#nico" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
++nico</h1>
++
++<p><a href="https://github.com/txthinking/nico" rel="nofollow">https://github.com/txthinking/nico</a></p>
++<h1><a name="brook-deploy" class="anchor" href="#brook-deploy" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
++Brook Deploy</h1>
++
++<p><a href="https://www.txthinking.com/deploy.html" rel="nofollow">https://www.txthinking.com/deploy.html</a></p>
+ <h1><a name="pastebin" class="anchor" href="#pastebin" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+ Pastebin</h1>
+ 
+-- 
+2.39.1
+

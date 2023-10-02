@@ -1,0 +1,238 @@
+From b1d3484d45d040dc5e43bef76228929608ed5ca7 Mon Sep 17 00:00:00 2001
+From: txthinking <cloud@txthinking.com>
+Date: Sat, 10 Jun 2023 11:26:44 +0800
+Subject: [PATCH 02/10] update docs
+
+---
+ README.md       | 21 +++++++++++++--------
+ docs/build.sh   |  6 ++++++
+ docs/gui-zh.md  |  7 +++----
+ docs/gui.md     |  7 +++----
+ docs/index.html | 40 ++++++++++++++++------------------------
+ 5 files changed, 41 insertions(+), 40 deletions(-)
+
+diff --git a/README.md b/README.md
+index bd52c40..6cc9c25 100644
+--- a/README.md
++++ b/README.md
+@@ -1,10 +1,14 @@
+ # Brook
+ A cross-platform programmable network tool. 一个跨平台可编程网络工具
+ 
++# Sponsor
++**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**
++
+ Table of Contents
+ =================
+ 
+ * [Brook](#brook)
++* [Sponsor](#sponsor)
+ * [Getting Started 快速上手](#getting-started-快速上手)
+    * [Server](#server)
+    * [GUI Client](#gui-client)
+@@ -125,6 +129,9 @@ Table of Contents
+ <!--SIDEBAR-->
+ <!--G-R3M673HK5V-->
+ A cross-platform programmable network tool. 一个跨平台可编程网络工具
++
++# Sponsor
++**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**
+ # Getting Started 快速上手
+ 
+ ## Server
+@@ -978,10 +985,9 @@ The so-called Internet connection is IP to IP connection, not domain name connec
+ | Programmable   | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Programmable switch                                                                                                                                                                                                                                                                   |
+ | Script         | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Script. All functions above can be controlled. And more and more, **The whole process can be controled, see below for details**.                                                                                                                                                      |
+ | Log            | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log switch                                                                                                                                                                                                                                                                            |
+-| Log View       | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log List                                                                                                                                                                                                                                                                              |
+-| Log View Plus  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log list, easier to read, filter conditions, etc.                                                                                                                                                                                                                                     |
+-| MITM Log View  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | MITM log list, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
+-| TUN            | iOS,Android,Mac,Windows,Linux                 | / | Choose Proxy/TUN/App mode. iOS,Android,Mac default TUN mode mode                                                                                                                                                                                                                                                         |
++| Activity  | iOS,Android,Mac,Windows,Linux     | /  | Networking activity |
++| MITM  | iOS,Android,Mac,Windows,Linux     | / | Packet capture and modify, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
++| TUN            | iOS,Android,Mac,Windows,Linux                 | / | Choose Proxy/TUN/App mode. [macOS bug](https://www.txthinking.com/talks/articles/macos-bug.article). iOS,Android,Mac default TUN mode mode                                                                                                                                                                                                                                                         |
+ | Capture Me     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Test your packet capture or proxy software is working as a system proxy or TUN                                                                                                                                                                                                        |
+ | DNS Client    | iOS,Android,Mac,Windows,Linux | /                                           | DNS client                                                                                   |
+ | DOH Client    | iOS,Android,Mac,Windows,Linux | /                                           | DOH client                                                                                                           |
+@@ -1242,10 +1248,9 @@ To receive push, Apple Server only allows Ethernet, cellular data, Wi-Fi connect
+ | 可编程  | iOS,Android,Mac,Windows,Linux | /                                           | 可编程开关                                                                                                                                                                                                  |
+ | 脚本        | iOS,Android,Mac,Windows,Linux | /                                           | 脚本。可以控制上面所有的功能。以及上面没有的功能，**全流程控制一切，具体看下文**。                                                                                                                          |
+ | 日志           | iOS,Android,Mac,Windows,Linux | /                                           | 日志开关                                                                                                                                                                                                    |
+-| 查看日志      | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表                                                                                                                                                                                                    |
+-| 日志 Plus | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表，更易读，过滤条件等                                                                                                                                                                                |
+-| 查看 MITM | iOS,Android,Mac,Windows,Linux | /                                           | MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等                                                                                                                                                |
+-| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 Proxy/TUN/App 模式. iOS,Android,Mac 默认 TUN 模式   |
++| 活动 | iOS,Android,Mac,Windows,Linux | / | 网络活动 |
++| MITM | iOS,Android,Mac,Windows,Linux | / | 抓包，修改包，比如 https 的请求响应，十六进制，JSON，图片等 |
++| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 Proxy/TUN/App 模式. [macOS bug](https://www.txthinking.com/talks/articles/macos-bug.article). iOS,Android,Mac 默认 TUN 模式 |
+ | 抓我    | iOS,Android,Mac,Windows,Linux | /                                           | 测试你的抓包或代理软件工作在系统代理还是 TUN                                                                                                                                                                |
+ | DNS 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DNS 客户端                                                                                                                              |
+ | DOH 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DOH 客户端                                                                                                                              |
+diff --git a/docs/build.sh b/docs/build.sh
+index 069e6e5..f681315 100755
+--- a/docs/build.sh
++++ b/docs/build.sh
+@@ -4,6 +4,9 @@ echo '# Brook' > ../readme.md
+ echo '<!--SIDEBAR-->' >> ../readme.md
+ echo '<!--G-R3M673HK5V-->' >> ../readme.md
+ echo 'A cross-platform programmable network tool. 一个跨平台可编程网络工具' >> ../readme.md
++echo '' >> ../readme.md
++echo '# Sponsor' >> ../readme.md
++echo '**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**' >> ../readme.md
+ 
+ cat getting-started.md >> ../readme.md
+ 
+@@ -41,6 +44,9 @@ markdown ../readme.md ./index.html
+ 
+ echo '# Brook' > _.md
+ echo 'A cross-platform programmable network tool. 一个跨平台可编程网络工具' >> _.md
++echo '' >> _.md
++echo '# Sponsor' >> _.md
++echo '**❤️  [Shiliew - China Optimized VPN](https://www.txthinking.com/shiliew.html)**' >> _.md
+ mdtoc ../readme.md >> _.md
+ cat ../readme.md >> _.md
+ mv _.md ../readme.md
+diff --git a/docs/gui-zh.md b/docs/gui-zh.md
+index 826acc7..838d452 100644
+--- a/docs/gui-zh.md
++++ b/docs/gui-zh.md
+@@ -46,10 +46,9 @@
+ | 可编程  | iOS,Android,Mac,Windows,Linux | /                                           | 可编程开关                                                                                                                                                                                                  |
+ | 脚本        | iOS,Android,Mac,Windows,Linux | /                                           | 脚本。可以控制上面所有的功能。以及上面没有的功能，**全流程控制一切，具体看下文**。                                                                                                                          |
+ | 日志           | iOS,Android,Mac,Windows,Linux | /                                           | 日志开关                                                                                                                                                                                                    |
+-| 查看日志      | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表                                                                                                                                                                                                    |
+-| 日志 Plus | iOS,Android,Mac,Windows,Linux | /                                           | 日志列表，更易读，过滤条件等                                                                                                                                                                                |
+-| 查看 MITM | iOS,Android,Mac,Windows,Linux | /                                           | MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等                                                                                                                                                |
+-| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 Proxy/TUN/App 模式. iOS,Android,Mac 默认 TUN 模式   |
++| 活动 | iOS,Android,Mac,Windows,Linux | / | 网络活动 |
++| MITM | iOS,Android,Mac,Windows,Linux | / | 抓包，修改包，比如 https 的请求响应，十六进制，JSON，图片等 |
++| TUN           | iOS,Android,Mac,Windows,Linux             | /                                           | 选择 Proxy/TUN/App 模式. [macOS bug](https://www.txthinking.com/talks/articles/macos-bug.article). iOS,Android,Mac 默认 TUN 模式 |
+ | 抓我    | iOS,Android,Mac,Windows,Linux | /                                           | 测试你的抓包或代理软件工作在系统代理还是 TUN                                                                                                                                                                |
+ | DNS 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DNS 客户端                                                                                                                              |
+ | DOH 客户端    | iOS,Android,Mac,Windows,Linux | /                                           | DOH 客户端                                                                                                                              |
+diff --git a/docs/gui.md b/docs/gui.md
+index 3495703..930c6a5 100644
+--- a/docs/gui.md
++++ b/docs/gui.md
+@@ -46,10 +46,9 @@ The so-called Internet connection is IP to IP connection, not domain name connec
+ | Programmable   | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Programmable switch                                                                                                                                                                                                                                                                   |
+ | Script         | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Script. All functions above can be controlled. And more and more, **The whole process can be controled, see below for details**.                                                                                                                                                      |
+ | Log            | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log switch                                                                                                                                                                                                                                                                            |
+-| Log View       | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log List                                                                                                                                                                                                                                                                              |
+-| Log View Plus  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Log list, easier to read, filter conditions, etc.                                                                                                                                                                                                                                     |
+-| MITM Log View  | iOS,Android,Mac,Windows,Linux     | /                                                                                   | MITM log list, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
+-| TUN            | iOS,Android,Mac,Windows,Linux                 | / | Choose Proxy/TUN/App mode. iOS,Android,Mac default TUN mode mode                                                                                                                                                                                                                                                         |
++| Activity  | iOS,Android,Mac,Windows,Linux     | /  | Networking activity |
++| MITM  | iOS,Android,Mac,Windows,Linux     | / | Packet capture and modify, such as https request response, hexadecimal, JSON, image, etc.                                                                                                                                                                                                         |
++| TUN            | iOS,Android,Mac,Windows,Linux                 | / | Choose Proxy/TUN/App mode. [macOS bug](https://www.txthinking.com/talks/articles/macos-bug.article). iOS,Android,Mac default TUN mode mode                                                                                                                                                                                                                                                         |
+ | Capture Me     | iOS,Android,Mac,Windows,Linux     | /                                                                                   | Test your packet capture or proxy software is working as a system proxy or TUN                                                                                                                                                                                                        |
+ | DNS Client    | iOS,Android,Mac,Windows,Linux | /                                           | DNS client                                                                                   |
+ | DOH Client    | iOS,Android,Mac,Windows,Linux | /                                           | DOH client                                                                                                           |
+diff --git a/docs/index.html b/docs/index.html
+index e5cd5fe..c887e54 100644
+--- a/docs/index.html
++++ b/docs/index.html
+@@ -1120,6 +1120,7 @@ div.content {
+     
+     <div class="sidebar">
+         <ul>
++<li><a href="#sponsor" rel="nofollow">Sponsor</a></li>
+ <li><a href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow">Getting Started 快速上手</a>
+ 
+ <ul>
+@@ -1262,6 +1263,7 @@ div.content {
+ 
+             <div class="sidebarmob">
+             <ul>
++<li><a href="#sponsor" rel="nofollow">Sponsor</a></li>
+ <li><a href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow">Getting Started 快速上手</a>
+ 
+ <ul>
+@@ -1403,6 +1405,10 @@ div.content {
+ 
+ 
+ <p>A cross-platform programmable network tool. 一个跨平台可编程网络工具</p>
++<h1><a name="sponsor" class="anchor" href="#sponsor" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
++Sponsor</h1>
++
++<p><strong>❤️  <a href="https://www.txthinking.com/shiliew.html" rel="nofollow">Shiliew - China Optimized VPN</a></strong></p>
+ <h1><a name="getting-started-快速上手" class="anchor" href="#getting-started-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+ Getting Started 快速上手</h1>
+ <h2><a name="server" class="anchor" href="#server" rel="nofollow" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+@@ -2371,31 +2377,24 @@ Configuration Introduction</h2>
+ </tr>
+ 
+ <tr>
+-<td>Log View</td>
+-<td>iOS,Android,Mac,Windows,Linux</td>
+-<td>/</td>
+-<td>Log List</td>
+-</tr>
+-
+-<tr>
+-<td>Log View Plus</td>
++<td>Activity</td>
+ <td>iOS,Android,Mac,Windows,Linux</td>
+ <td>/</td>
+-<td>Log list, easier to read, filter conditions, etc.</td>
++<td>Networking activity</td>
+ </tr>
+ 
+ <tr>
+-<td>MITM Log View</td>
++<td>MITM</td>
+ <td>iOS,Android,Mac,Windows,Linux</td>
+ <td>/</td>
+-<td>MITM log list, such as https request response, hexadecimal, JSON, image, etc.</td>
++<td>Packet capture and modify, such as https request response, hexadecimal, JSON, image, etc.</td>
+ </tr>
+ 
+ <tr>
+ <td>TUN</td>
+ <td>iOS,Android,Mac,Windows,Linux</td>
+ <td>/</td>
+-<td>Choose Proxy/TUN/App mode. iOS,Android,Mac default TUN mode mode</td>
++<td>Choose Proxy/TUN/App mode. <a href="https://www.txthinking.com/talks/articles/macos-bug.article" rel="nofollow">macOS bug</a>. iOS,Android,Mac default TUN mode mode</td>
+ </tr>
+ 
+ <tr>
+@@ -3184,31 +3183,24 @@ iOS, Mac, Android, Windows TUN 模式, Linux TUN 模式</h2>
+ </tr>
+ 
+ <tr>
+-<td>查看日志</td>
+-<td>iOS,Android,Mac,Windows,Linux</td>
+-<td>/</td>
+-<td>日志列表</td>
+-</tr>
+-
+-<tr>
+-<td>日志 Plus</td>
++<td>活动</td>
+ <td>iOS,Android,Mac,Windows,Linux</td>
+ <td>/</td>
+-<td>日志列表，更易读，过滤条件等</td>
++<td>网络活动</td>
+ </tr>
+ 
+ <tr>
+-<td>查看 MITM</td>
++<td>MITM</td>
+ <td>iOS,Android,Mac,Windows,Linux</td>
+ <td>/</td>
+-<td>MITM 日志列表，比如 https 的请求响应，十六进制，JSON，图片等</td>
++<td>抓包，修改包，比如 https 的请求响应，十六进制，JSON，图片等</td>
+ </tr>
+ 
+ <tr>
+ <td>TUN</td>
+ <td>iOS,Android,Mac,Windows,Linux</td>
+ <td>/</td>
+-<td>选择 Proxy/TUN/App 模式. iOS,Android,Mac 默认 TUN 模式</td>
++<td>选择 Proxy/TUN/App 模式. <a href="https://www.txthinking.com/talks/articles/macos-bug.article" rel="nofollow">macOS bug</a>. iOS,Android,Mac 默认 TUN 模式</td>
+ </tr>
+ 
+ <tr>
+-- 
+2.39.1
+
