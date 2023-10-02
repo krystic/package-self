@@ -25,6 +25,7 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice
 git clone --depth 1 https://github.com/sirpdboy/luci-app-netdata
 git clone --depth 1 https://github.com/sirpdboy/netspeedtest
+git clone --depth 1 https://github.com/sirpdboy/luci-app-wizard
 git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot
 git clone --depth 1 https://github.com/tty228/luci-app-serverchan
 git clone --depth 1 https://github.com/AlexZhuo/luci-app-bandwidthd.git
@@ -84,14 +85,14 @@ done
 
 sed -i \
 	-e 's?include \.\./\.\./\(lang\|devel\)?include $(TOPDIR)/feeds/packages/\1?' \
-	-e 's?2. Clash For OpenWRT?3. Applications?' \
+#	-e 's?2. Clash For OpenWRT?3. Applications?' \
 	-e 's?\.\./\.\./luci.mk?$(TOPDIR)/feeds/luci/luci.mk?' \
 	*/Makefile
 
-sed -i 's/+dockerd/+dockerd +cgroupfs-mount/' luci-app-docker*/Makefile
-sed -i '$i /etc/init.d/dockerd restart &' luci-app-docker*/root/etc/uci-defaults/*
-sed -i 's/+libcap /+libcap +libcap-bin /' luci-app-openclash/Makefile
-sed -i 's/\(+luci-compat\)/\1 +luci-theme-argon/' luci-app-argon-config/Makefile
+sed -i 's/+dockerd/+dockerd +cgroupfs-mount/' luci-app-dockerman*/Makefile
+# sed -i '$i /etc/init.d/dockerd restart &' luci-app-dockerman*/root/etc/uci-defaults/*
+# sed -i 's/+libcap /+libcap +libcap-bin /' luci-app-openclash/Makefile
+# sed -i 's/\(+luci-compat\)/\1 +luci-theme-argon/' luci-app-argon-config/Makefile
 # sed -i 's/luci-lib-ipkg/luci-base/g' luci-app-store/Makefile
 sed -i "s/nas/services/g" `grep nas -rl luci-app-fileassistant`
 sed -i "s/NAS/Services/g" `grep NAS -rl luci-app-fileassistant`
