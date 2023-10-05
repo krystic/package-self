@@ -40,7 +40,11 @@ svn export https://github.com/sirpdboy/sirpdboy-package/trunk/luci-app-adguardho
 #git clone --depth 1 https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
 
 # argon theme
-git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
+if [ "$1" -eq "lede"] then
+	git clone --depth 1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
+else
+	git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
+fi
 git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config
 git clone --depth 1 https://github.com/sirpdboy/luci-app-advanced
 #git clone --depth 1 https://github.com/frainzy1477/luci-app-clash
