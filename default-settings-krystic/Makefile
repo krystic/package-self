@@ -1,16 +1,20 @@
 #
-# Copyright (C) 2016-2023 GitHub 
+# Copyright (C) 2021 Lean <coolsnowwolf@gmail.com>
 #
-# This is free software, licensed under the GNU General Public License v3.
+# Copyright (C) 2021 ImmortalWrt
+# <https://immortalwrt.org>
+#
+# This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
+#
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=default-settings-krystic
-PKG_VERSION:=3
-PKG_RELEASE:=6
-PKG_LICENSE:=GPLv3
-PKG_LICENSE_FILES:=LICENSE
+PKG_VERSION:=1.0
+PKG_RELEASE:=1
+
+PKG_LICENSE:=GPL-3.0
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -18,8 +22,8 @@ define Package/default-settings-krystic
   SECTION:=luci
   CATEGORY:=LuCI
   TITLE:=Default Settings by Krystic
+  DEPENDS:=+luci
   PKGARCH:=all
-  DEPENDS:=+luci-base +luci +@LUCI_LANG_zh-cn
 endef
 
 define Build/Compile
@@ -27,10 +31,7 @@ endef
 
 define Package/default-settings-krystic/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/krystic-default-settings $(1)/etc/uci-defaults/99-default-settings-krystic
+	$(INSTALL_BIN) ./files/99-default-settings-krystic $(1)/etc/uci-defaults/
 endef
-
-#	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
-#	po2lmo ./po/zh-cn/default.po $(1)/usr/lib/lua/luci/i18n/default.zh-cn.lmo
 
 $(eval $(call BuildPackage,default-settings-krystic))

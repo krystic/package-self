@@ -1,0 +1,13 @@
+#!/bin/sh
+
+uci -q get system.@imm_init[0] > "/dev/null" || uci -q add system imm_init > "/dev/null"
+
+uci -q batch <<-EOF
+	set system.@system[0].hostname="KrysticWrt"
+	commit system
+EOF
+
+sed -i 's/root::0:0:99999:7:::/root::0:0:99999:7:::/g' /etc/shadow
+sed -i 's/root:::0:99999:7:::/root::0:0:99999:7:::/g' /etc/shadow
+
+exit 0
