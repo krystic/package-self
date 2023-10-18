@@ -1,0 +1,9 @@
+do_sysinfo_krystic() {
+	mkdir -p /tmp/sysinfo
+	[ -e /tmp/sysinfo/board_name ] || \
+		echo "unknown-soft-router" > /tmp/sysinfo/board_name
+	[ -e /tmp/sysinfo/model ] || \
+		echo "Unknown Soft Router" > /tmp/sysinfo/model
+}
+
+boot_hook_add preinit_main do_sysinfo_krystic

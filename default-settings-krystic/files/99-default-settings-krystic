@@ -10,4 +10,6 @@ EOF
 sed -i 's/root::0:0:99999:7:::/root::0:0:99999:7:::/g' /etc/shadow
 sed -i 's/root:::0:99999:7:::/root::0:0:99999:7:::/g' /etc/shadow
 
+mv -f /etc/krystic_banner /etc/banner
+
 exit 0
